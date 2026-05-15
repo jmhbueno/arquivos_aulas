@@ -40,6 +40,27 @@ pacman::p_load(tidyverse,psych,corrplot,pander,knitr,lavaan,car,DescTools,
 
 A função p_load, do pacote pacman, verifica se um pacote está instalado e em caso negativo tenta instalar o pacote a partir do CRAN ou de qualquer outro repositório na lista de repositórios do pacman.
 
+Utilizando os comandos a seguir, você pode baixar todos os comandos deste arquivo em .html e em .qmd.
+
+```{r}
+link_StatR_2026_html <- "https://github.com/jmhbueno/Arquivos_aulas/raw/main/2026_StatR_alunos.html"
+
+## Importa o arquivo do github para o computador (fora do R)
+download.file(
+  url = link_StatR_2026_html,
+  destfile = "StatR_2026_github.html",
+  mode = "wb")
+
+link_StatR_2026_qmd <- "https://github.com/jmhbueno/Arquivos_aulas/raw/main/2026_StatR_alunos.qmd"
+
+## Importa o arquivo do github para o computador (fora do R)
+download.file(
+  url = link_StatR_2026_qmd,
+  destfile = "StatR_2026_github.qmd",
+  mode = "wb")
+
+```
+
 # Importar banco de dados
 
 ## dataset
@@ -605,8 +626,7 @@ abline(lm(bai_sum ~ bdi_sum,
 # Correlação parcial
 
 ## Primeiro passo instalar o pacote ppcor
-# install.packages("ppcor")
-library(ppcor)
+options(repos = c(CRAN = "https://cloud.r-project.org"))# library(ppcor)
 
 ## Selecionar variáveis e eliminar missing values
 
@@ -624,9 +644,9 @@ cor.test(partial_matrix$bai_sum,
 ## Colocar as variáveis que se quer correlacionar nos dois primeiros argumentos
 ## e a que se quer controlar como terceiro argumento.
 
-pcor.test(partial_matrix$bai_sum,
-          partial_matrix$bdi_sum,
-          partial_matrix$age)
+ppcor::pcor.test(partial_matrix$bai_sum,
+                 partial_matrix$bdi_sum,
+                 partial_matrix$age)
 
 ## OBS.: O terceiro argumento aceita mais de uma variável. Por exemplo...
 ## Correlação entre extr e neur, controlando cons, amab e aber...
@@ -637,23 +657,91 @@ partial_bf <- big_five %>%
   drop_na()
 
 ## Passo 2: correlação parcial controlando cons, amab e aber
-pcor.test(partial_bf$extr,              # variável 1
-          partial_bf$neur,              # variável 2
-          partial_bf[, c("cons",        # variáveis de controle
-                         "amab",
-                         "aber")])      # eliminar missing values
+ppcor::pcor.test(partial_bf$extr,              # variável 1
+                 partial_bf$neur,              # variável 2
+                 partial_bf[, c("cons",        # variáveis de controle
+                                "amab",
+                                "aber")])      # eliminar missing values
 
 ## Comparar com correlação sem parcialização
 cor.test(big_five$extr,big_five$neur)
 
 # comando para fechar o pacote ppcor, que tem um pacote associado (MASS), cuja função select conflita com o select do pacote tidyverse.
-detach("package:ppcor", unload = TRUE)
-detach("package:MASS", unload = TRUE)
+# detach("package:ppcor", unload = TRUE)
+# detach("package:MASS", unload = TRUE)
 
 
 ```
 
-## Regressão Linear Múltipla
+<!-- # Exercício simples de correlação -->
+
+```{r}
+#| eval: false
+#| include: false
+
+# Criar variáveis e banco de dados para o exercício
+
+n <- 200     # número de observações
+
+intelig <- rnorm(n)                          # variável preditora (a)
+memtrab <- 0.4 * intelig + rnorm(n, sd = 0.8)   # mediador (c), causado por v1
+notaesc <- 0.15 * intelig + 0.5 * memtrab + rnorm(n, sd = 0.8)  # desfecho (b), causado por v1 e v3
+
+
+# Converte para dataframe
+df_correlation_test <- data.frame(intelig,memtrab,notaesc)
+
+write.csv(df_correlation_test,"correlation_test.csv")
+
+df_correlation_test <- read.csv("correlation_test.csv")
+
+corr.test(df_correlation_test$intelig,df_correlation_test$notaesc)
+
+ppcor::pcor.test(df_correlation_test$intelig,
+          df_correlation_test$notaesc,
+          df_correlation_test$memtrab)
+
+
+plot(
+  x = df_correlation_test$intelig,
+  y = df_correlation_test$notaesc,
+  type = "p",
+  pch = 16,
+  xlab = "Inteligência",
+  ylab = "Nota escolar"
+)
+
+modelo <- lm(notaesc ~ intelig, data = df_correlation_test)
+
+abline(modelo, lwd = 2, col = "red")
+```
+
+### Exercício - correlação
+
+- Abra o RStudio e entre no projeto que voc\~e está utilizando para a disciplina.
+- Importe o banco de dados fictício correlation_test.csv executando o script abaixo.
+
+```{r}
+link_correlation_test <- "https://github.com/jmhbueno/arquivos_aulas/raw/main/correlation_test.csv"
+
+## Importa o arquivo do github para o computador (fora do R)
+download.file(
+  url = link_correlation_test,
+  destfile = "correlation_test.csv",
+  mode = "wb")
+
+
+```
+
+- Agora, você deve ter o arquivo `correlation_test.csv` no seu computador, na pasta que está utilizando o R.
+- Importe esse arquivo para dentro do R, salvando como correlation_test.
+- Verifique o que há dentro do dataframe.
+- Você deve encontrar três variáveis: inteligência (intelig), memória de trabalho (memtrab) e notas escolares (notaesc).
+- Calcule a correlação simples (função `corr.test` do pacote psych) entre inteligência e notas escolares. Anote o valor da correlação, o número de participantes que gerou o resultado, e o valor de p.
+- Agora, calcule a correlação parcial (função `pcor.test` do pacote `ppcor`) entre inteligência e notas escolares, controlando memória de trabalho.
+- Compare os coeficientes de correlação obtidos e explique o que ocorreu.
+
+## Regressão Linear Simples e Múltipla
 
 A análise de regressão linear avança em relação ao coeficiente de correlação, por estabelecer QUANTO uma variável varia em função de outra.
 Por exemplo, é possível predizer ansiedade a partir da depressão?
@@ -664,10 +752,12 @@ Para verificar isso, usaremos a função `lm()` do pacote stats da base do R.
 LM são as iniciais de linear model.
 
 ```{r}
+#| label: Gerando o modelo
+
 mod_ans_dep <- lm(      # lm é a função linear model
   data = dataset,       # onde estão os dados
   bai_sum ~ bdi_sum,    # depressão predizendo ansiedade
-  na.action = na.omit)  # ignorar NAs
+  na.action = na.omit)  # comando para ignorar NAs
 
 # OBS.: Estamos salvando os resultados do modelo no objeto mod_ans_dep. 
 # Para ver o resultado, podemos usar a função summary()
@@ -675,12 +765,12 @@ mod_ans_dep <- lm(      # lm é a função linear model
 summary(mod_ans_dep)
 ```
 
-Há três tipos de resultados importantes na saída dessta análise:
+Há três tipos de resultados importantes na saída desta análise:
 
 1.  F-statistic: 1094 on 1 and 1946 DF, p-value: \< 2.2e-16
 
 Essa é a última linha dos resultados, mas a primeira a ser observada.
-A estatística F compara se a associação entre as duas variáveis consideradas (ansiedade e depressão) é significativamente diferente da associação entre duas variáveis aleatórias (cuja correlação costuma ser muito próxima de zero).
+A estatística F verifica se a associação entre as duas variáveis consideradas (ansiedade e depressão) é significativamente diferente da associação entre duas variáveis aleatórias (cuja correlação costuma ser muito próxima de zero).
 Portanto, se a estatística F for estatisticamente significativa (p-value \< 0,05), isso indica que pode ser possível descrever a variação de uma variável (ansiedade) em função da outra (depressão), porque provavelmente há associação entre ansiedade e depressão.
 
 2.  Multiple R-squared: 0.3599, Adjusted R-squared: 0.3596
@@ -700,10 +790,137 @@ Isso indica que, para predizer a pontuação em ansiedade do sujeito i, basta pe
 Nota-se que o p-valor de bdi_sum foi estatísticamente significativo, com p = 2 .
 10^-16^ , indicando que a cada ponto que depressão sobre, a ansiedade sobre 0,62919 pontos.
 
-Exemplo de relato dos resultados: *Foi realizada uma análise de regressão para verificar a possibilidade de predizer ansiedade a partir da depressão. Observou-se que essa predição é viável (F=1094, DF = 1, p-value \< 2.2e-16), que ela explica 36% da variância total de ansiedade e que a cada aumento de um ponto em depressão, a pontuação em ansiedade tende a aumentar 0,63 pontos.*
+Exemplo de relato dos resultados: *A análise de regressão linear simples indicou que os escores de depressão, avaliados pelo Inventário de Depressão de Beck (BDI), predizem significativamente os níveis de ansiedade mensurados pelo Inventário de Ansiedade de Beck (BAI), F(1, 1946) = 1094.00, p \< .001. O modelo explicou aproximadamente 36% da variância nos escores de ansiedade (R² = .36), indicando um efeito de magnitude substancial. Observou-se uma associação positiva entre as variáveis, de modo que, a cada aumento de um ponto nos escores de depressão, estima-se um incremento médio de 0,63 ponto nos escores de ansiedade (β = 0.63, p \< .001), sugerindo que níveis mais elevados de sintomas depressivos estão associados a maiores níveis de sintomas ansiosos.*
+
+Essa análise poderia ser representada graficamente, já que envolve apenas duas variáveis:\
+
+```{r}
+
+plot(
+  x = dataset$bdi_sum,
+  y = dataset$bai_sum,
+  type = "p",
+  pch = 16,
+  main = "Depressão x Ansiedade",
+  xlab = "Depressão",
+  ylab = "Ansiedade"
+)
+
+mod_ans_dep <- lm(      # lm é a função linear model
+  data = dataset,       # onde estão os dados
+  bai_sum ~ bdi_sum,    # depressão predizendo ansiedade
+  na.action = na.omit)
+
+abline(mod_ans_dep, lwd = 2, col = "red")
+```
 
 A análise de regressão linear múltipla, é muito semelhante à simples.
 Apenas envolve mais de uma variável independente.
+Vamos ver isso, com um novo banco de dados (fictício), chamado `dados`.
+
+```{r}
+#| include: false
+
+# Matriz com base em dados da literatura
+
+# Tamanho da amostra
+N <- 800
+
+# Matriz de correlações
+R <- matrix(c(
+  1.00,  0.25,  0.45,  0.55,  0.00,  0.10,  0.25, -0.15,  0.15,
+  0.25,  1.00,  0.18,  0.32,  0.10,  0.25,  0.20, -0.25,  0.20,
+  0.45,  0.18,  1.00,  0.45,  0.00,  0.00, -0.05, -0.05,  0.25,
+  0.55,  0.32,  0.45,  1.00,  0.05,  0.10,  0.05, -0.05,  0.35,
+  0.00,  0.10,  0.00,  0.05,  1.00,  0.15,  0.00, -0.25,  0.20,
+  0.10,  0.25,  0.00,  0.10,  0.15,  1.00,  0.20, -0.15,  0.15,
+  0.25,  0.20, -0.05,  0.05,  0.00,  0.20,  1.00, -0.25,  0.10,
+ -0.15, -0.25, -0.05, -0.05, -0.25, -0.15, -0.25,  1.00,  0.00,
+  0.15,  0.20,  0.25,  0.35,  0.20,  0.15,  0.10,  0.00,  1.00
+), nrow = 9, byrow = TRUE)
+
+# Nome das variáveis
+colnames(R) <- rownames(R) <- c(
+  "desc", "inte", "intf", "intc",
+  "extr", "amab", "cons", "neur", "aber"
+)
+
+# Verificar se a matriz é positiva definida
+eigen(R)$values
+
+# Gerar banco de dados fictício correlacionado
+set.seed(123)
+
+dados <- as.data.frame(
+  MASS::mvrnorm(
+    n = N,
+    mu = rep(0, 9),
+    Sigma = R,
+    empirical = TRUE
+  )
+)
+
+# Nomear variáveis
+names(dados) <- c(
+  "desc", "inte", "intf", "intc",
+  "extr", "amab", "cons", "neur", "aber"
+)
+
+# Conferir primeiras linhas
+head(dados)
+
+# Conferir matriz de correlações obtida
+round(cor(dados), 2)
+
+```
+
+O banco de dados **dados** consiste em uma base fictícia, simulada para fins didáticos, contendo informações de participantes em nove variáveis contínuas: desempenho escolar, inteligência emocional, inteligência fluída, inteligência cristalizada, extroversão, amabilidade, conscienciosidade, neuroticismo e abertura à experiência.
+A estrutura correlacional entre essas variáveis foi definida com base em associações teóricas previamente especificadas, de modo a representar um cenário plausível de investigação em psicologia.
+O objetivo da análise é examinar, por meio de regressão múltipla, em que medida as variáveis cognitivas, emocionais e de personalidade contribuem para a predição do desempenho escolar.
+
+```{r}
+# Regressão múltipla
+modelo_reg <- lm(
+  desc ~ inte + intf + intc + extr + amab + cons + neur + aber,
+  data = dados
+)
+
+# Resumo dos resultados
+summary(modelo_reg)
+
+```
+
+Relato dos resultados: *A análise de regressão múltipla indicou que o modelo foi estatisticamente significativo, F(8, 791) = 73.10, p \< .001, explicando aproximadamente 41,9% da variância no desempenho escolar (R² ajustado = .419). Entre os preditores incluídos no modelo, inteligência fluída (β = .28, p \< .001), inteligência cristalizada (β = .44, p \< .001), conscienciosidade (β = .23, p \< .001) e abertura à experiência (β = −.10, p = .001) apresentaram contribuições estatisticamente significativas para a predição do desempenho escolar.*
+
+De forma mais detalhada:
+
+Esses resultados indicam que, **considerando simultaneamente todas as variáveis incluídas no modelo**, algumas delas contribuíram de forma independente para explicar diferenças no desempenho escolar.
+
+O teste global da regressão (*F*(8, 791) = 73.10, *p* \< .001) mostra que o conjunto de preditores explica o desempenho escolar de maneira significativamente melhor do que um modelo sem preditores.
+Ou seja, há evidências de que parte importante da variabilidade no desempenho acadêmico está associada às variáveis cognitivas, emocionais e de personalidade incluídas na análise.
+
+O *R² ajustado* de .419 indica que aproximadamente **41,9% da variância do desempenho escolar** foi explicada pelo modelo, o que representa uma proporção substantiva da variabilidade observada.
+
+Quanto aos preditores específicos, os coeficientes representam o efeito **único de cada variável sobre o desempenho escolar, mantendo constantes todas as demais**.
+Como os dados foram simulados em escala padronizada (média zero e desvio-padrão igual a 1), os coeficientes podem ser interpretados em unidades de desvio-padrão.
+
+- **Inteligência fluída (*β* = .28)**: indica que, para cada aumento de **1 desvio-padrão** em inteligência fluída, espera-se um aumento médio de **0,28 desvio-padrão** no desempenho escolar, mantendo constantes os demais preditores.
+  Isso sugere que a capacidade de raciocínio abstrato e resolução de problemas novos contribui positivamente para o rendimento acadêmico.
+
+- **Inteligência cristalizada (*β* = .44)**: foi o preditor mais forte.
+  Isso significa que, para cada aumento de **1 desvio-padrão** nessa variável, espera-se um incremento médio de **0,44 desvio-padrão** no desempenho escolar.
+  Em termos substantivos, conhecimentos acumulados e repertório cognitivo previamente adquirido parecem exercer influência particularmente relevante sobre o desempenho acadêmico.
+
+- **Conscienciosidade (*β* = .23)**: indica que, para cada aumento de **1 desvio-padrão** em conscienciosidade, o desempenho escolar tende a aumentar, em média, **0,23 desvio-padrão**, controlando as demais variáveis.
+  Isso sugere que características como organização, disciplina e persistência favorecem melhor rendimento escolar.
+
+- **Abertura à experiência (*β* = −.10)**: indica que, para cada aumento de **1 desvio-padrão** em abertura, espera-se uma redução média de **0,10 desvio-padrão** no desempenho escolar, após o controle das demais variáveis.
+  Embora estatisticamente significativo, esse efeito é pequeno e deve ser interpretado com cautela, pois pode refletir efeitos de supressão estatística decorrentes da correlação entre abertura e variáveis cognitivas.
+
+As variáveis **inteligência emocional, extroversão, amabilidade e neuroticismo** não apresentaram efeitos estatisticamente significativos, indicando que, neste modelo, não explicaram variância adicional única no desempenho escolar após o controle dos demais preditores.
+
+Em síntese, os resultados sugerem que o desempenho escolar é explicado principalmente por **habilidades cognitivas**, especialmente inteligência cristalizada e fluída, seguidas por **características de autorregulação comportamental**, como a conscienciosidade.
+
 Vamos ver esse exemplo, com o banco de dados big_five, do qual vamos selecionar apenas os dados dos participantes brasileiros.
 Para isso, no seu computador, copie o banco de dados `big_five` para o diretório em que está realizando estas análises.
 
@@ -755,17 +972,73 @@ mod$coefficients %>% as.data.frame() %>% pander()
 ## Regressão múltipla com o pacote `olsrr`
 
 ```{r}
-# install.packages("olsrr")
+install.packages("olsrr")
 library(olsrr)
 
 # regressão linear pelo método ENTER
-ols_regress(bai_sum ~ bdi_sum, data = dataset)
-
-ols_regress(age ~ extr+neur+amab+cons+aber, data = big_five_BR)
+olsrr::ols_regress(bai_sum ~ bdi_sum, data = dataset)
+olsrr::ols_regress(desc ~ inte + intf + intc + extr + amab + cons + neur + aber, 
+                   data = dados)
+olsrr::ols_regress(age ~ extr + neur + amab + cons + aber, data = big_five_BR)
 
 # regressão linear pelo método STEPWISE
-ols_step_both_p(mod)   # aplica a função ao modelo gerado pela função lm
+olsrr::ols_step_both_p(modelo_reg)   # aplica a função ao modelo gerado pela função lm
 
+```
+
+### Exercício - Regressão
+
+Execute o script a seguir para obter o arquivo bsq_eat.csv em seu computador.
+OBS.: Você deve rodar esse script no RStudio, após você ter aberto o projeto (open project) que você está utilizando para a disciplina.
+
+```{r}
+#| label: Baixar arquivo para exercício
+
+link_regression_test <- "https://github.com/jmhbueno/arquivos_aulas/raw/main/bsq_eat.csv"
+
+## Importa o arquivo do github para o computador (fora do R)
+download.file(
+  url = link_regression_test,
+  destfile = "bsq_eat.csv",
+  mode = "wb")
+```
+
+Verifique, no quadrante inferior direito, aba "Files", se o arquivo bsq_eat.csv foi salvo no seu computador.
+
+Importe esse arquivo para dentro do RStudio, salvando-o como dataframe bsq_eat
+
+```{r}
+#| include: false
+
+bsq_eat <- read.csv("bsq_eat.csv")
+```
+
+Nesse arquivo há diversas variáveis, dentre as quais temos: eat_soma, bsq_soma e imc.
+
+*Uma hipótese plausível a ser testada é que **maiores níveis de insatisfação ou distorção da imagem corporal, bem como maior índice de massa corporal (IMC), estejam associados a comportamentos alimentares mais disfuncionais**, especialmente maior tendência à restrição alimentar. Em termos analíticos, isso pode ser investigado por meio de uma regressão múltipla, na qual a variável dependente será a pontuação total no EAT (eat_soma), interpretada como indicador de comportamentos alimentares de risco, enquanto a percepção da imagem corporal (bsq_soma) e o IMC (imc) serão incluídos como variáveis preditoras. O estudo original utilizou estratégia semelhante para examinar relações preditivas entre essas variáveis.*
+
+```{r}
+#| eval: false
+#| include: false
+
+# install.packages("lm.beta")
+
+# Regressão múltipla
+modelo_eat <- lm(
+  eat_soma ~ bsq_soma + imc,
+  data = bsq_eat
+)
+
+# Resultados completos
+summary(modelo_eat)
+
+# Coeficientes padronizados (opcional)
+lm.beta::lm.beta(modelo_eat)
+
+
+pairs(
+  bsq_eat[, c("eat_soma", "bsq_soma", "imc")]
+)
 ```
 
 ## Análise fatorial exploratória
@@ -1696,6 +1969,7 @@ Para superar essa limitação e podermos comparar mais de duas categorias de uma
 
 Agora, vamos usar o dataframe `rwas` para verificar se há efeito do nível de escolaridade (fundamental, médio, superior, pós-graduação) sobre a medida de *autoritarismo de direita* mensurada por meio da **Right Wing Authoritarianism Scale**.
 Para isso, é necessário importar o banco de dados:
+
 ```{r}
 ## Cria um objeto com o endereço (link) onde está o arquivo
 link_rwas <- "https://github.com/jmhbueno/Arquivos_aulas/raw/main/rwas.rds"
@@ -1711,6 +1985,7 @@ rwas <-
 ```
 
 ### ANOVA de uma via
+
 ```{r}
 # Criação do modelo usando a função aov do pacote stats (Base do R)
 anova_auth <- aov(auth ~ education, rwas)
@@ -2297,4 +2572,3 @@ dados::dados_gapminder %>% filter(pais == "Brasil")
 
 
 ```
-
