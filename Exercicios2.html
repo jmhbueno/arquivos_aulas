@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Prof. Maurício Bueno">
-<meta name="dcterms.date" content="2026-06-17">
+<meta name="dcterms.date" content="2026-06-23">
 
 <title>Exercícios de Estatística no R - 2026.1</title>
 <style>
@@ -2244,7 +2244,7 @@ vertical-align: -.125em;
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 17, 2026</p>
+      <p class="date">June 23, 2026</p>
     </div>
   </div>
   
@@ -2361,6 +2361,7 @@ $ sexo_fct               &lt;chr&gt; &quot;masculino&quot;, &quot;masculino&quot
 </div>
 <p>Este banco de dados reúne informações de uma pesquisa sobre empreendedorismo realizada com 147 taxistas cooperados de Santo André (SP). O estudo utilizou a Escala de Tendência Empreendedora Geral (TEG), composta por 54 itens dicotômicos, para investigar a relação entre características empreendedoras e variáveis sociodemográficas e ocupacionais. Os dados deram origem a um artigo sobre empreendedorismo em taxistas e, posteriormente, subsidiaram o desenvolvimento da versão reduzida do instrumento (TEG-FIT).</p>
 <p>O banco contém variáveis sociodemográficas (sexo, estado civil e escolaridade), ocupacionais (tempo de empresa, satisfação com a profissão, carga horária, exercício de outra atividade profissional e autopercepção de empreendedorismo) e psicológicas. Também estão disponíveis as respostas aos 54 itens da TEG (v1–v54), o escore geral de empreendedorismo (teg) e os escores das cinco dimensões avaliadas pelo instrumento: tendência para assumir riscos, tendência criativa, necessidade de realização, necessidade de autonomia e impulso/determinação.</p>
+<p><strong>IMPORTANTE</strong>: note que temos a <strong>variável</strong> teg dentro do <strong>dataframe</strong> teg.</p>
 <p>As principais codificações são: sexo (1 = masculino; 2 = feminino); estado civil (1 = solteiro; 2 = casado; 3 = divorciado; 4 = viúvo); escolaridade (1 = primário; 2 = ensino fundamental; 3 = ensino médio; 4 = ensino superior); satisfação com a profissão (1 = sim; 2 = não; 3 = parcialmente); outra atividade profissional (1 = não; 2 = sim); autopercepção empreendedora (1 = não se considera empreendedor; 2 = pouco empreendedor; 3 = empreendedor; 4 = muito empreendedor); e carga horária (1 = até 8 horas; 2 = entre 8 e 12 horas; 3 = mais de 12 horas; 4 = outra condição).</p>
 <p>A medida de Tendência Empreendedora Geral (TEG) foi desenvolvida por Caird (1991) para avaliar características comportamentais associadas ao empreendedorismo. A escala original é composta por 54 itens dicotômicos que mensuram cinco dimensões: necessidade de realização, necessidade de autonomia, tendência criativa, disposição para assumir riscos e impulso/determinação. Seus escores permitem estimar o nível de tendência empreendedora dos indivíduos, sendo amplamente utilizada em pesquisas sobre empreendedorismo em contextos educacionais e profissionais.</p>
 <p><strong>Necessidade de realização:</strong> Este fator reúne comportamentos relacionados à busca por desafios, estabelecimento de metas e desejo de alcançar resultados de excelência. Pessoas com pontuações elevadas tendem a confiar em suas capacidades, persistir diante de dificuldades, assumir responsabilidade pelos próprios resultados e buscar constantemente melhorar seu desempenho. Os itens descrevem indivíduos orientados para objetivos, motivados por conquistas pessoais e dispostos a testar seus limites para alcançar sucesso.</p>
@@ -2373,157 +2374,581 @@ $ sexo_fct               &lt;chr&gt; &quot;masculino&quot;, &quot;masculino&quot
 </section>
 <section id="analise-as-correlações-entre-os-fatores-do-teg." class="level1">
 <h1>1. Analise as correlações entre os fatores do TEG.</h1>
-<!-- O objetivo desta análise foi investigar as relações entre os cinco fatores da Escala de Tendência Empreendedora Geral (TEG): tendência para assumir riscos, tendência criativa, necessidade de realização, tendência de autonomia e tendência à determinação. -->
-<!-- Para isso, inicialmente foi criado um novo banco de dados (teg_factors) contendo apenas as variáveis de interesse. -->
-<!-- Essa etapa foi realizada por meio da função `select()` do pacote **dplyr**, que permite selecionar colunas específicas de um conjunto de dados. -->
-<!-- No exemplo apresentado, o objeto `teg_factors` foi criado a partir da seleção das colunas 68 a 72 do banco de dados original (`teg`), correspondentes aos cinco fatores da TEG. -->
-<!-- `teg_factors <- teg %>% select(68:72)` -->
-<!-- Em seguida, foram calculadas as correlações entre todos os fatores utilizando a função `corr.test()` do pacote **psych**. -->
-<!-- Essa função produz uma matriz de correlações, além de estatísticas complementares, como valores de significância, intervalos de confiança e correções para múltiplas comparações. -->
-<!-- O resultado foi armazenado no objeto `cor_tab1`. -->
-<!-- `cor_tab1 <- corr.test(teg_factors)` -->
-<!-- Após o cálculo das correlações, foi utilizada a propriedade `$stars` do objeto gerado por `corr.test()`. -->
-<!-- Essa opção produz uma matriz contendo os coeficientes de correlação acompanhados por asteriscos que indicam o nível de significância estatística. -->
-<!-- Por fim, a função `kable()`, do pacote **knitr**, foi empregada para apresentar os resultados em formato de tabela, facilitando sua visualização e interpretação. -->
-<!-- `cor_tab1$stars %>% kable()` -->
-<!-- A interpretação da tabela deve considerar tanto a magnitude dos coeficientes quanto sua significância estatística. -->
-<!-- Correlações positivas indicam que escores elevados em um fator tendem a estar associados a escores elevados em outro fator. -->
-<!-- Já correlações negativas indicam uma relação inversa entre as variáveis. -->
-<!-- Os asteriscos representam os níveis de significância estatística (\* p \< 0,05; \*\* p \< 0,01; \*\*\* p \< 0,001). -->
-<!-- *Os resultados indicaram correlações positivas e estatisticamente significativas entre tendência criativa e necessidade de realização (r = 0,25; p \< 0,01), entre tendência criativa e tendência de autonomia (r = 0,21; p \< 0,05), entre necessidade de realização e tendência de autonomia (r = 0,19; p \< 0,05), entre necessidade de realização e tendência à determinação (r = 0,22; p \< 0,01) e entre tendência para assumir riscos e tendência de autonomia (r = 0,18; p \< 0,05). Apesar de significativas, todas as correlações observadas apresentaram magnitude baixa. Os demais coeficientes não alcançaram significância estatística. De modo geral, os resultados sugerem que os fatores da TEG apresentam associações modestas entre si, indicando que compartilham apenas parte de sua variância e podem representar dimensões relativamente distintas do comportamento empreendedor.* -->
+<p>Para a realização dessa análise, seguiremos os seguintes passos:</p>
+<ol type="1">
+<li>Verficar a posição das variáveis nas colunas: <code>names()</code></li>
+<li>Formação de um dataframe somente com as variáveis de interesse: o dataframe foi nomeado teg_factors e continha somente as variáveis que estão nas colunas de 68 a 72.</li>
+<li>Executar função <code>corr.test()</code></li>
+<li>Visualização dos resultados</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(teg)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] &quot;X&quot;                      &quot;sexo&quot;                   &quot;civil&quot;                 
+ [4] &quot;escolaridade&quot;           &quot;escolaridade_ancora&quot;    &quot;escolaridade_ancora2&quot;  
+ [7] &quot;tempo_de_empresa&quot;       &quot;esta_satisfeito&quot;        &quot;carga_horaria&quot;         
+[10] &quot;outra_atividade&quot;        &quot;outra_atividade_ancora&quot; &quot;pensa_empreendedor&quot;    
+[13] &quot;v1&quot;                     &quot;v2&quot;                     &quot;v3&quot;                    
+[16] &quot;v4&quot;                     &quot;v5&quot;                     &quot;v6&quot;                    
+[19] &quot;v7&quot;                     &quot;v8&quot;                     &quot;v9&quot;                    
+[22] &quot;v10&quot;                    &quot;v11&quot;                    &quot;v12&quot;                   
+[25] &quot;v13&quot;                    &quot;v14&quot;                    &quot;v15&quot;                   
+[28] &quot;v16&quot;                    &quot;v17&quot;                    &quot;v18&quot;                   
+[31] &quot;v19&quot;                    &quot;v20&quot;                    &quot;v21&quot;                   
+[34] &quot;v22&quot;                    &quot;v23&quot;                    &quot;v24&quot;                   
+[37] &quot;v25&quot;                    &quot;v26&quot;                    &quot;v27&quot;                   
+[40] &quot;v28&quot;                    &quot;v29&quot;                    &quot;v30&quot;                   
+[43] &quot;v31&quot;                    &quot;v32&quot;                    &quot;v33&quot;                   
+[46] &quot;v34&quot;                    &quot;v35&quot;                    &quot;v36&quot;                   
+[49] &quot;v37&quot;                    &quot;v38&quot;                    &quot;v39&quot;                   
+[52] &quot;v40&quot;                    &quot;v41&quot;                    &quot;v42&quot;                   
+[55] &quot;v43&quot;                    &quot;v44&quot;                    &quot;v45&quot;                   
+[58] &quot;v46&quot;                    &quot;v47&quot;                    &quot;v48&quot;                   
+[61] &quot;v49&quot;                    &quot;v50&quot;                    &quot;v51&quot;                   
+[64] &quot;v52&quot;                    &quot;v53&quot;                    &quot;v54&quot;                   
+[67] &quot;teg&quot;                    &quot;tendencia_risco&quot;        &quot;tendencia_criativa&quot;    
+[70] &quot;necessidade_realizacao&quot; &quot;tendencia_autonomia&quot;    &quot;tendencia_determinacao&quot;
+[73] &quot;escolaridade_fct&quot;       &quot;sexo_fct&quot;              </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># seleção dos fatores do TEG em um novo dataframe (teg_factors)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>teg_factors <span class="ot">&lt;-</span>  <span class="co"># salvar tudo no dataframe teg_factors</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  teg <span class="sc">%&gt;%</span>       <span class="co"># partir do dataframe teg</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">68</span><span class="sc">:</span><span class="dv">72</span>) <span class="co"># selecionar as variáveis que estão nas colunas de 68 a 72.</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Cálculo das correlações, salvando no objeto cor_tab1</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>cor_tab1 <span class="ot">&lt;-</span>                   <span class="co"># salvar os resultados no objeto cor_tab1</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">corr.test</span>(                  <span class="co"># função do psych para o cálculo das correlações</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> teg_factors)          <span class="co"># localização das variáveis</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualização das correlações</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="do">## somente as correlações</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>cor_tab1<span class="sc">$</span>r <span class="sc">%&gt;%</span>      <span class="co"># chamar o objeto cor_tab1 e buscar ($) somente as correlações (r)</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>) <span class="co"># função kable() para formatação de tabela</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 12%">
+<col style="width: 15%">
+<col style="width: 18%">
+<col style="width: 16%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">tendencia_risco</th>
+<th style="text-align: right;">tendencia_criativa</th>
+<th style="text-align: right;">necessidade_realizacao</th>
+<th style="text-align: right;">tendencia_autonomia</th>
+<th style="text-align: right;">tendencia_determinacao</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">tendencia_risco</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">0.07</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tendencia_criativa</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">-0.02</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">necessidade_realizacao</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">0.22</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tendencia_autonomia</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.03</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">tendencia_determinacao</td>
+<td style="text-align: right;">0.07</td>
+<td style="text-align: right;">-0.02</td>
+<td style="text-align: right;">0.22</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">1.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">## somente os p-values</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>cor_tab1<span class="sc">$</span>p <span class="sc">%&gt;%</span>      <span class="co"># chamar o objeto cor_tab1 e buscar ($) somente os p-values (p) </span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>) <span class="co"># função kable() para formatação de tabela</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 12%">
+<col style="width: 15%">
+<col style="width: 18%">
+<col style="width: 16%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">tendencia_risco</th>
+<th style="text-align: right;">tendencia_criativa</th>
+<th style="text-align: right;">necessidade_realizacao</th>
+<th style="text-align: right;">tendencia_autonomia</th>
+<th style="text-align: right;">tendencia_determinacao</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">tendencia_risco</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.16</td>
+<td style="text-align: right;">1.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tendencia_criativa</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.08</td>
+<td style="text-align: right;">1.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">necessidade_realizacao</td>
+<td style="text-align: right;">0.51</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.16</td>
+<td style="text-align: right;">0.06</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tendencia_autonomia</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">tendencia_determinacao</td>
+<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">0.83</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.73</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="do">## usando a opção &quot;stars&quot; (recomendada)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>cor_tab1<span class="sc">$</span>stars <span class="sc">%&gt;%</span>  <span class="co"># chamar o objeto cor_tab1 e buscar ($) somente a opção stars</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()           <span class="co"># função kable() para formatação de tabela</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 12%">
+<col style="width: 15%">
+<col style="width: 18%">
+<col style="width: 16%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">tendencia_risco</th>
+<th style="text-align: left;">tendencia_criativa</th>
+<th style="text-align: left;">necessidade_realizacao</th>
+<th style="text-align: left;">tendencia_autonomia</th>
+<th style="text-align: left;">tendencia_determinacao</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">tendencia_risco</td>
+<td style="text-align: left;">1***</td>
+<td style="text-align: left;">0.03</td>
+<td style="text-align: left;">0.05</td>
+<td style="text-align: left;">0.18</td>
+<td style="text-align: left;">0.07</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tendencia_criativa</td>
+<td style="text-align: left;">0.03</td>
+<td style="text-align: left;">1***</td>
+<td style="text-align: left;">0.25*</td>
+<td style="text-align: left;">0.21</td>
+<td style="text-align: left;">-0.02</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">necessidade_realizacao</td>
+<td style="text-align: left;">0.05</td>
+<td style="text-align: left;">0.25**</td>
+<td style="text-align: left;">1***</td>
+<td style="text-align: left;">0.19</td>
+<td style="text-align: left;">0.22</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tendencia_autonomia</td>
+<td style="text-align: left;">0.18*</td>
+<td style="text-align: left;">0.21*</td>
+<td style="text-align: left;">0.19*</td>
+<td style="text-align: left;">1***</td>
+<td style="text-align: left;">0.03</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">tendencia_determinacao</td>
+<td style="text-align: left;">0.07</td>
+<td style="text-align: left;">-0.02</td>
+<td style="text-align: left;">0.22**</td>
+<td style="text-align: left;">0.03</td>
+<td style="text-align: left;">1***</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>O objetivo desta análise foi investigar as relações entre os cinco fatores da Escala de Tendência Empreendedora Geral (TEG): tendência para assumir riscos, tendência criativa, necessidade de realização, tendência de autonomia e tendência à determinação.</p>
+<p>Para isso, inicialmente foi criado um novo banco de dados (teg_factors) contendo apenas as variáveis de interesse.</p>
+<p>Essa etapa foi realizada por meio da função <code>select()</code> do pacote <strong>dplyr</strong>, que permite selecionar colunas específicas de um conjunto de dados.</p>
+<p>No exemplo apresentado, o objeto <code>teg_factors</code> foi criado a partir da seleção das colunas 68 a 72 do banco de dados original (<code>teg</code>), correspondentes aos cinco fatores da TEG.</p>
+<p><code>teg_factors &lt;- teg %&gt;% select(68:72)</code></p>
+<p>Em seguida, foram calculadas as correlações entre todos os fatores utilizando a função <code>corr.test()</code> do pacote <strong>psych</strong>.</p>
+<p>Essa função produz uma matriz de correlações, além de estatísticas complementares, como valores de significância, intervalos de confiança e correções para múltiplas comparações.</p>
+<p>O resultado foi armazenado no objeto <code>cor_tab1</code>.</p>
+<p><code>cor_tab1 &lt;- corr.test(teg_factors)</code></p>
+<p>Após o cálculo das correlações, foi utilizada a propriedade <code>$stars</code> do objeto gerado por <code>corr.test()</code>.</p>
+<p>Essa opção produz uma matriz contendo os coeficientes de correlação acompanhados por asteriscos que indicam o nível de significância estatística.</p>
+<p>Por fim, a função <code>kable()</code>, do pacote <strong>knitr</strong>, foi empregada para apresentar os resultados em formato de tabela, facilitando sua visualização e interpretação.</p>
+<p><code>cor_tab1$stars %&gt;% kable()</code></p>
+<p>A interpretação da tabela deve considerar tanto a magnitude dos coeficientes quanto sua significância estatística.</p>
+<p>Correlações positivas indicam que escores elevados em um fator tendem a estar associados a escores elevados em outro fator.</p>
+<p>Já correlações negativas indicam uma relação inversa entre as variáveis.</p>
+<p>Os asteriscos representam os níveis de significância estatística (* p &lt; 0,05; ** p &lt; 0,01; *** p &lt; 0,001).</p>
+<p><em>Os resultados indicaram correlações positivas e estatisticamente significativas entre tendência criativa e necessidade de realização (r = 0,25; p &lt; 0,01), entre tendência criativa e tendência de autonomia (r = 0,21; p &lt; 0,05), entre necessidade de realização e tendência de autonomia (r = 0,19; p &lt; 0,05), entre necessidade de realização e tendência à determinação (r = 0,22; p &lt; 0,01) e entre tendência para assumir riscos e tendência de autonomia (r = 0,18; p &lt; 0,05). Apesar de significativas, todas as correlações observadas apresentaram magnitude baixa. Os demais coeficientes não alcançaram significância estatística. De modo geral, os resultados sugerem que os fatores da TEG apresentam associações modestas entre si, indicando que compartilham apenas parte de sua variância e podem representar dimensões relativamente distintas do comportamento empreendedor.</em></p>
 </section>
 <section id="há-diferenças-entre-grupos-gênero-quanto-à-tendência-empreendedora-geral-teg" class="level1">
 <h1>2. Há diferenças entre grupos (gênero) quanto à Tendência Empreendedora Geral (TEG)</h1>
-<!-- O objetivo desta análise foi verificar se homens e mulheres diferem quanto à Tendência Empreendedora Geral (TEG). -->
-<!-- Como a variável independente (sexo) possui dois grupos independentes e a variável dependente (TEG) é quantitativa, a comparação foi realizada por meio do teste *t* para amostras independentes. -->
-<!-- Antes da realização do teste *t*, avaliou-se o pressuposto de homogeneidade das variâncias utilizando o teste de Levene, implementado pela função `LeveneTest()` do pacote **car**. -->
-<!-- O argumento `teg ~ sexo_fct` especifica que a variável TEG será comparada entre os grupos definidos por `sexo_fct`. -->
-<!-- O argumento `data = teg` indica o banco de dados utilizado e `center = mean` informa que os desvios serão calculados em relação à média de cada grupo. -->
-<!-- `LeveneTest(teg ~ sexo_fct, data = teg, center = mean)` -->
-<!-- O resultado do teste de Levene foi significativo (*F*(1,145) = 4,74; *p* = 0,031), indicando que as variâncias dos grupos não podem ser consideradas homogêneas. -->
-<!-- Como esse pressuposto foi violado, optou-se pela versão de Welch do teste *t*, que não exige igualdade das variâncias. -->
-<!-- Em seguida, realizou-se o teste *t* por meio da função `t.test()`. -->
-<!-- Novamente, a fórmula `teg ~ sexo_fct` indica a comparação das médias de TEG entre homens e mulheres. -->
-<!-- O argumento `var.equal = FALSE` especifica a utilização da correção de Welch para variâncias desiguais. -->
-<!-- `t_teg <- t.test(teg ~ sexo_fct, data = teg, var.equal = FALSE)`  -->
-<!-- Os resultados do teste foram organizados utilizando a função `tidy()` do pacote **broom**, que converte a saída do teste em formato tabular, facilitando a leitura e a elaboração de relatórios. -->
-<!-- `tidy(t_teg)`  -->
-<!-- Além da significância estatística, foi calculado o tamanho do efeito utilizando a função `cohen.d()` do pacote **effsize**. -->
-<!-- O tamanho do efeito permite avaliar a magnitude prática da diferença entre os grupos, independentemente do tamanho da amostra. -->
-<!-- `effsize::cohen.d(teg ~ sexo_fct, data = teg)`  -->
-<!-- O coeficiente de Cohen (*d*) é geralmente interpretado segundo os critérios propostos por Cohen (1988): aproximadamente 0,20 indica efeito pequeno, 0,50 efeito médio e 0,80 efeito grande. -->
-<!-- *Os resultados indicaram que homens (M = 29,6) apresentaram escore médio ligeiramente superior ao das mulheres (M = 28,6). Entretanto, essa diferença não foi estatisticamente significativa, t(17,2) = 0,66, p = 0,517, IC95% \[-2,15; 4,11\]. O tamanho do efeito também foi pequeno (d = 0,21), sugerindo que a magnitude da diferença observada é reduzida. Em conjunto, os resultados indicam que não há evidências de diferenças significativas entre homens e mulheres quanto à Tendência Empreendedora Geral na amostra analisada.* -->
+<p>Para verificar a diferença entre DOIS grupos, usamos um t-teste para amostras independentes, pois, neste caso, quem está em um grupo, não está no outro grupo. O passo a passo é o seguinte:</p>
+<ol type="1">
+<li>Inspeção do dataframe, com <code>glimpse(teg)</code>.</li>
+<li>A partir da constatação de que a variável sexo_fct está codificada como caractere (chr), é necessário transformá-la para fator (fct).</li>
+<li>Executar o Teste de Levene para verificar se as variâncias podem ser assumidas como equivalentes. Se p&lt;0,05, então, as variâncias NÃO podem ser assumidas como equivalentes.</li>
+<li>Executar o t-teste.</li>
+<li>Visualizar os resultados.</li>
+<li>Calcular o tamanho do efeito.</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># constatou-se que a variável sexo_fct estava codificada como chr, sendo necessário codificá-la como fct para a realização da análise.</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># transformação de sexo_fct em fator</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>teg<span class="sc">$</span>sexo_fct <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(teg<span class="sc">$</span>sexo_fct)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># teste de levene</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">LeveneTest</span>(        <span class="co"># Função que executa o Teste de Levene, do pacote DescTools</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  teg <span class="sc">~</span> sexo_fct,  <span class="co"># comparar as categorias de sexo_fct em teg</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> teg,      <span class="co"># os dados estão no dataframe teg</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">center =</span> mean)   <span class="co"># centralizar na média e não na mediana.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Levene&#39;s Test for Homogeneity of Variance (center = mean)
+       Df F value  Pr(&gt;F)  
+group   1  4.7412 0.03107 *
+      145                  
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># t-teste</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>t_teg <span class="ot">&lt;-</span>               <span class="co"># salvar os resultados no objeto t_teg (nome dado por mim) </span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t.test</span>(              <span class="co"># chamar a função t.test, da base do R.</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    teg <span class="sc">~</span> sexo_fct,    <span class="co"># comparar os grupos de sexo_fct na variável teg</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> teg,        <span class="co"># os dados se encontram no dataframe teg</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">var.equal =</span> <span class="cn">FALSE</span>) <span class="co"># as variâncias devem ser assumidas como iguais? ver leveneTest </span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar os resultados</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>teg <span class="sc">%&gt;%</span>                        <span class="co"># partir do dataframe teg</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sexo_fct) <span class="sc">%&gt;%</span>       <span class="co"># agrupar pelas categorias de sexo_fct (masc e fem)</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(média <span class="ot">=</span> <span class="fu">mean</span>(teg), <span class="co"># calcular média e desvio padrão da variável teg</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">despad =</span> <span class="fu">sd</span>(teg))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  sexo_fct  média despad
+  &lt;fct&gt;     &lt;dbl&gt;  &lt;dbl&gt;
+1 feminino   29.6   5.74
+2 masculino  28.6   4.42</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tamanho do efeito</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cohen.d</span>(           <span class="co"># função para cálculo do d de Cohen (Tamanho do Efeito)</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  teg <span class="sc">~</span> sexo_fct,  <span class="co"># calcular os efeitos de sexo_fct na variável teg</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> teg)      <span class="co"># os dados estão no dataframe teg   </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call: cohen.d(x = teg ~ sexo_fct, data = teg)
+Cohen d statistic of difference between two means
+    lower effect upper
+teg -0.74  -0.22   0.3
+
+Multivariate (Mahalanobis) distance between groups
+[1] 0.22
+r equivalent of difference between two means
+  teg 
+-0.07 </code></pre>
+</div>
+</div>
+<p>O objetivo desta análise foi verificar se homens e mulheres diferem quanto à Tendência Empreendedora Geral (TEG).</p>
+<p>Como a variável independente (sexo) possui dois grupos independentes e a variável dependente (TEG) é quantitativa, a comparação foi realizada por meio do teste <em>t</em> para amostras independentes.</p>
+<p>Antes da realização do teste <em>t</em>, avaliou-se o pressuposto de homogeneidade das variâncias utilizando o teste de Levene, implementado pela função <code>LeveneTest()</code> do pacote <strong>car</strong>.</p>
+<p>O argumento <code>teg ~ sexo_fct</code> especifica que a variável TEG será comparada entre os grupos definidos por <code>sexo_fct</code>.</p>
+<p>O argumento <code>data = teg</code> indica o banco de dados utilizado e <code>center = mean</code> informa que os desvios serão calculados em relação à média de cada grupo.</p>
+<p><code>LeveneTest(teg ~ sexo_fct, data = teg, center = mean)</code></p>
+<p>O resultado do teste de Levene foi significativo (<em>F</em>(1,145) = 4,74; <em>p</em> = 0,031), indicando que as variâncias dos grupos não podem ser consideradas homogêneas.</p>
+<p>Como esse pressuposto foi violado, optou-se pela versão de Welch do teste <em>t</em>, que não exige igualdade das variâncias.</p>
+<p>Em seguida, realizou-se o teste <em>t</em> por meio da função <code>t.test()</code>.</p>
+<p>Novamente, a fórmula <code>teg ~ sexo_fct</code> indica a comparação das médias de TEG entre homens e mulheres.</p>
+<p>O argumento <code>var.equal = FALSE</code> especifica a utilização da correção de Welch para variâncias desiguais.</p>
+<p><code>t_teg &lt;- t.test(teg ~ sexo_fct, data = teg, var.equal = FALSE)</code></p>
+<p>Os resultados do teste foram organizados utilizando a função <code>tidy()</code> do pacote <strong>broom</strong>, que converte a saída do teste em formato tabular, facilitando a leitura e a elaboração de relatórios.</p>
+<p><code>tidy(t_teg)</code></p>
+<p>Além da significância estatística, foi calculado o tamanho do efeito utilizando a função <code>cohen.d()</code> do pacote <strong>effsize</strong>.</p>
+<p>O tamanho do efeito permite avaliar a magnitude prática da diferença entre os grupos, independentemente do tamanho da amostra.</p>
+<p><code>effsize::cohen.d(teg ~ sexo_fct, data = teg)</code></p>
+<p>O coeficiente de Cohen (<em>d</em>) é geralmente interpretado segundo os critérios propostos por Cohen (1988): aproximadamente 0,20 indica efeito pequeno, 0,50 efeito médio e 0,80 efeito grande.</p>
+<p><em>Os resultados indicaram que homens (M = 29,6) apresentaram escore médio ligeiramente superior ao das mulheres (M = 28,6). Entretanto, essa diferença não foi estatisticamente significativa, t(17,2) = 0,66, p = 0,517, IC95% [-2,15; 4,11]. O tamanho do efeito também foi pequeno (d = 0,21), sugerindo que a magnitude da diferença observada é reduzida. Em conjunto, os resultados indicam que não há evidências de diferenças significativas entre homens e mulheres quanto à Tendência Empreendedora Geral na amostra analisada.</em></p>
 </section>
 <section id="há-diferenças-entre-grupos-escolaridade-quanto-à-tendência-empreendedora-geral" class="level1">
 <h1>3. Há diferenças entre grupos (escolaridade) quanto à Tendência Empreendedora Geral</h1>
-<!-- O objetivo desta análise foi verificar se participantes com diferentes níveis de escolaridade apresentam diferenças nos escores de Tendência Empreendedora Geral (TEG). -->
-<!-- Como a variável independente (escolaridade) possui mais de dois grupos e a variável dependente (TEG) é quantitativa, utilizou-se a Análise de Variância (ANOVA) de uma via. -->
-<!-- Inicialmente, observou-se que a variável `escolaridade_fct` estava armazenada como texto (*character*). -->
-<!-- Como a ANOVA requer que a variável de agrupamento seja categórica (*factor*), foi necessário convertê-la utilizando a função `as.factor()`. -->
-<!-- `teg$escolaridade_fct <- as.factor(teg$escolaridade_fct)` -->
-<!-- Em seguida, foi ajustado um modelo de ANOVA por meio da função `aov()`. -->
-<!-- Na fórmula `teg ~ escolaridade_fct`, a variável `teg` corresponde ao escore de Tendência Empreendedora Geral e `escolaridade_fct` representa os grupos de escolaridade a serem comparados. -->
-<!-- `aov_mod1 <- aov(teg ~ escolaridade_fct, data = teg)`  -->
-<!-- Após o ajuste do modelo, utilizou-se a função `summary.aov()` para obter a tabela de ANOVA. -->
-<!-- Essa tabela apresenta a decomposição da variância total em variância entre grupos e variância residual, além do teste F utilizado para avaliar se pelo menos uma das médias difere das demais. -->
-<!-- `summary.aov(aov_mod1)`  -->
-<!-- Como o resultado da ANOVA foi significativo, realizou-se uma análise *post hoc* para identificar quais grupos diferiam entre si. -->
-<!-- Para isso, foi empregada a função `PostHocTest()`, utilizando o método de Tukey HSD (*Honestly Significant Difference*). -->
-<!-- Esse procedimento controla o erro do Tipo I decorrente de múltiplas comparações simultâneas. -->
-<!-- `PostHocTest(x = aov_mod1, ordered = FALSE, conf.level = 0.95, method = "hsd" )`  -->
-<!-- Por fim, foi calculado o tamanho do efeito utilizando a função `cohens_f()`. -->
-<!-- O coeficiente de Cohen (*f*) fornece uma estimativa da magnitude da associação entre a variável independente e a variável dependente. -->
-<!-- De acordo com Cohen (1988), valores próximos de 0,10 são considerados pequenos, 0,25 médios e 0,40 grandes. -->
-<!-- cohens_f( aov_mod1,partial = TRUE,squared = FALSE,ci = 0.95,alternative = "greater" )  -->
-<!-- *A análise de variância revelou efeito significativo da escolaridade sobre a Tendência Empreendedora Geral, F(3, 143) = 8,23, p \< 0,001. Os testes post hoc de Tukey indicaram que participantes com ensino superior apresentaram escores significativamente mais elevados de empreendedorismo do que aqueles com ensino médio (p = 0,019), ensino fundamental/ginásio (p \< 0,001) e ensino primário (p = 0,002). Não foram observadas diferenças significativas entre os grupos de ensino médio, fundamental e primário. O tamanho do efeito foi considerado grande (f = 0,42; IC95% \[0,25; ∞\]), indicando que a escolaridade apresenta associação substantiva com os níveis de Tendência Empreendedora Geral. Em conjunto, os resultados sugerem que indivíduos com maior escolaridade tendem a apresentar níveis mais elevados de características empreendedoras.* -->
+<p>Passo a passo:</p>
+<ol type="1">
+<li>Transformar a variável <code>escolaridade_fct</code> em fator.</li>
+<li>Executar a análise de variância</li>
+<li>Visualização dos resultados</li>
+<li>Análises post-hoc</li>
+<li>Cálculo do tamanho do efeito.</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># constatou-se que a variável escolaridade_fct estava codificada como chr, sendo necessário codificá-la como fct para a realização da análise.</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>teg<span class="sc">$</span>escolaridade_fct <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(teg<span class="sc">$</span>escolaridade_fct)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ANOVA</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>aov_mod1 <span class="ot">&lt;-</span> <span class="fu">aov</span>(teg <span class="sc">~</span> escolaridade_fct, teg)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualização dos resultados</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary.aov</span>(aov_mod1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+escolaridade_fct   3  449.3   149.8   8.231 4.33e-05 ***
+Residuals        143 2602.3    18.2                     
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># post-hocs</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">PostHocTest</span>(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> aov_mod1,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ordered =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&quot;hsd&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  Posthoc multiple comparisons of means : Tukey HSD 
+    95% family-wise confidence level
+
+$escolaridade_fct
+                       diff     lwr.ci     upr.ci    pval    
+ginasio-Colegial  -2.113012 -4.3874425  0.1614175 0.07880 .  
+primario-Colegial -4.203922 -8.8881020  0.4802589 0.09541 .  
+superior-Colegial  2.955499  0.3491261  5.5618714 0.01936 *  
+primario-ginasio  -2.090909 -7.0124117  2.8305935 0.68742    
+superior-ginasio   5.068511  2.0563991  8.0806233 0.00014 ***
+superior-primario  7.159420  2.0759831 12.2428575 0.00198 ** 
+
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tamanho do efeito</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cohens_f</span>(</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  aov_mod1,                 <span class="co"># localização dos dados</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">partial =</span> <span class="cn">TRUE</span>,           <span class="co"># mostra resultados parciais</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">squared =</span> <span class="cn">FALSE</span>,          <span class="co"># T para mostrar f ao quadrado</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">model2 =</span> <span class="cn">NULL</span>,            <span class="co"># modelo mais simples, é possível testar outros modelos</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ci =</span> <span class="fl">0.95</span>,                <span class="co"># intervalo de confiança</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">alternative =</span> <span class="st">&quot;greater&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>For one-way between subjects designs, partial eta squared is equivalent
+  to eta squared. Returning eta squared.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Effect Size for ANOVA
+
+Parameter        | Cohen&#39;s f |      95% CI
+------------------------------------------
+escolaridade_fct |      0.42 | [0.25, Inf]
+
+- One-sided CIs: upper bound fixed at [Inf].</code></pre>
+</div>
+</div>
+<p>O objetivo desta análise foi verificar se participantes com diferentes níveis de escolaridade apresentam diferenças nos escores de Tendência Empreendedora Geral (TEG).</p>
+<p>Como a variável independente (escolaridade) possui mais de dois grupos e a variável dependente (TEG) é quantitativa, utilizou-se a Análise de Variância (ANOVA) de uma via.</p>
+<p>Inicialmente, observou-se que a variável <code>escolaridade_fct</code> estava armazenada como texto (<em>character</em>).</p>
+<p>Como a ANOVA requer que a variável de agrupamento seja categórica (<em>factor</em>), foi necessário convertê-la utilizando a função <code>as.factor()</code>.</p>
+<p><code>teg$escolaridade_fct &lt;- as.factor(teg$escolaridade_fct)</code></p>
+<p>Em seguida, foi ajustado um modelo de ANOVA por meio da função <code>aov()</code>.</p>
+<p>Na fórmula <code>teg ~ escolaridade_fct</code>, a variável <code>teg</code> corresponde ao escore de Tendência Empreendedora Geral e <code>escolaridade_fct</code> representa os grupos de escolaridade a serem comparados.</p>
+<p><code>aov_mod1 &lt;- aov(teg ~ escolaridade_fct, data = teg)</code></p>
+<p>Após o ajuste do modelo, utilizou-se a função <code>summary.aov()</code> para obter a tabela de ANOVA.</p>
+<p>Essa tabela apresenta a decomposição da variância total em variância entre grupos e variância residual, além do teste F utilizado para avaliar se pelo menos uma das médias difere das demais.</p>
+<p><code>summary.aov(aov_mod1)</code></p>
+<p>Como o resultado da ANOVA foi significativo, realizou-se uma análise <em>post hoc</em> para identificar quais grupos diferiam entre si.</p>
+<p>Para isso, foi empregada a função <code>PostHocTest()</code>, utilizando o método de Tukey HSD (<em>Honestly Significant Difference</em>).</p>
+<p>Esse procedimento controla o erro do Tipo I decorrente de múltiplas comparações simultâneas.</p>
+<p><code>PostHocTest(x = aov_mod1, ordered = FALSE, conf.level = 0.95, method = &quot;hsd&quot; )</code></p>
+<p>Por fim, foi calculado o tamanho do efeito utilizando a função <code>cohens_f()</code>.</p>
+<p>O coeficiente de Cohen (<em>f</em>) fornece uma estimativa da magnitude da associação entre a variável independente e a variável dependente.</p>
+<p>De acordo com Cohen (1988), valores próximos de 0,10 são considerados pequenos, 0,25 médios e 0,40 grandes.</p>
+<p>cohens_f( aov_mod1,partial = TRUE,squared = FALSE,ci = 0.95,alternative = “greater” )</p>
+<p><em>A análise de variância revelou efeito significativo da escolaridade sobre a Tendência Empreendedora Geral, F(3, 143) = 8,23, p &lt; 0,001. Os testes post hoc de Tukey indicaram que participantes com ensino superior apresentaram escores significativamente mais elevados de empreendedorismo do que aqueles com ensino médio (p = 0,019), ensino fundamental/ginásio (p &lt; 0,001) e ensino primário (p = 0,002). Não foram observadas diferenças significativas entre os grupos de ensino médio, fundamental e primário. O tamanho do efeito foi considerado grande (f = 0,42; IC95% [0,25; ∞]), indicando que a escolaridade apresenta associação substantiva com os níveis de Tendência Empreendedora Geral. Em conjunto, os resultados sugerem que indivíduos com maior escolaridade tendem a apresentar níveis mais elevados de características empreendedoras.</em></p>
 </section>
 <section id="verificar-os-efeitos-simultâneos-de-sexo-e-escolaridade-em-teg" class="level1">
 <h1>4. Verificar os efeitos simultâneos de sexo e escolaridade em TEG</h1>
-<!-- O objetivo desta análise foi verificar os efeitos simultâneos do sexo e da escolaridade sobre a Tendência Empreendedora Geral (TEG). -->
-<!-- Além de examinar os efeitos principais de cada variável, buscou-se investigar se o efeito da escolaridade sobre o empreendedorismo varia em função do sexo dos participantes. -->
-<!-- Para isso, foi empregada uma Análise de Variância (ANOVA) fatorial. -->
-<!-- Inicialmente, foi ajustado um modelo de ANOVA por meio da função `aov()`. -->
-<!-- Na fórmula especificada, a variável `teg` corresponde ao escore de Tendência Empreendedora Geral, enquanto `sexo_fct` e `escolaridade_fct` representam os fatores independentes. -->
-<!-- O operador `*` indica que serão estimados simultaneamente os efeitos principais de cada variável e o efeito de interação entre elas. -->
-<!-- `aov_mod2 <- aov(teg ~ sexo_fct * escolaridade_fct, data = teg)`  -->
-<!-- Em seguida, os resultados do modelo foram examinados por meio da função `summary()`, que produz a tabela de ANOVA contendo os graus de liberdade, somas de quadrados, quadrados médios, estatísticas F e respectivos valores de significância. -->
-<!-- `summary(aov_mod2)`  -->
-<!-- A interpretação da ANOVA fatorial envolve três testes distintos. -->
-<!-- O primeiro avalia o efeito principal do sexo sobre a TEG. -->
-<!-- O segundo verifica o efeito principal da escolaridade. -->
-<!-- O terceiro examina a interação entre sexo e escolaridade, indicando se as diferenças associadas à escolaridade são semelhantes ou diferentes para homens e mulheres. -->
-<!-- Além da significância estatística, foi calculado o tamanho do efeito por meio da função `cohens_f()` do pacote **effectsize**. -->
-<!-- O coeficiente de Cohen (*f*) fornece uma estimativa da magnitude prática dos efeitos observados. -->
-<!-- Valores próximos de 0,10 são considerados pequenos, 0,25 médios e 0,40 grandes. -->
-<!-- `cohens_f(aov_mod2, partial = TRUE, squared = FALSE, ci = 0.95 )`  -->
-<!-- *Os resultados revelaram ausência de efeito principal do sexo sobre a Tendência Empreendedora Geral, F(1, 140) = 0,77, p = 0,383, indicando que homens e mulheres não diferem significativamente em seus níveis médios de empreendedorismo. O tamanho do efeito foi pequeno (f = 0,07), sugerindo relevância prática mínima dessa variável. Em contrapartida, observou-se efeito principal significativo da escolaridade, F(3, 140) = 8,35, p \< 0,001, com tamanho de efeito grande (f = 0,42), indicando que os níveis de empreendedorismo variam substancialmente em função da escolaridade dos participantes. Por fim, a interação entre sexo e escolaridade não foi significativa, F(2, 140) = 1,89, p = 0,155, apresentando tamanho de efeito pequeno (f = 0,16). Esse resultado sugere que a relação entre escolaridade e Tendência Empreendedora Geral é semelhante para homens e mulheres. Em conjunto, os resultados indicam que a escolaridade constitui um importante preditor do empreendedorismo, enquanto o sexo não apresenta influência significativa, nem modifica os efeitos da escolaridade sobre os escores da TEG.* -->
+<p>Passo a passo:</p>
+<ul>
+<li><p>estimação do modelo</p></li>
+<li><p>visualização dos resultados</p></li>
+<li><p>tamanho do efeito</p></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># estimação do modelo</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>aov_mod2 <span class="ot">&lt;-</span> <span class="fu">aov</span>(teg <span class="sc">~</span> sexo_fct <span class="sc">*</span> escolaridade_fct, <span class="at">data =</span> teg)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualização dos resultados</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(aov_mod2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                           Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+sexo_fct                    1   13.8   13.76   0.765    0.383    
+escolaridade_fct            3  450.5  150.17   8.345 3.83e-05 ***
+sexo_fct:escolaridade_fct   2   68.0   34.02   1.891    0.155    
+Residuals                 140 2519.3   17.99                     
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tamanho do efeito</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cohens_f</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  aov_mod2,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">partial =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">squared =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ci =</span> <span class="fl">0.95</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Effect Size for ANOVA (Type I)
+
+Parameter                 | Cohen&#39;s f (partial) |      95% CI
+-------------------------------------------------------------
+sexo_fct                  |                0.07 | [0.00, Inf]
+escolaridade_fct          |                0.42 | [0.25, Inf]
+sexo_fct:escolaridade_fct |                0.16 | [0.00, Inf]
+
+- One-sided CIs: upper bound fixed at [Inf].</code></pre>
+</div>
+</div>
+<p>O objetivo desta análise foi verificar os efeitos simultâneos do sexo e da escolaridade sobre a Tendência Empreendedora Geral (TEG).</p>
+<p>Além de examinar os efeitos principais de cada variável, buscou-se investigar se o efeito da escolaridade sobre o empreendedorismo varia em função do sexo dos participantes.</p>
+<p>Para isso, foi empregada uma Análise de Variância (ANOVA) fatorial.</p>
+<p>Inicialmente, foi ajustado um modelo de ANOVA por meio da função <code>aov()</code>.</p>
+<p>Na fórmula especificada, a variável <code>teg</code> corresponde ao escore de Tendência Empreendedora Geral, enquanto <code>sexo_fct</code> e <code>escolaridade_fct</code> representam os fatores independentes.</p>
+<p>O operador <code>*</code> indica que serão estimados simultaneamente os efeitos principais de cada variável e o efeito de interação entre elas.</p>
+<p><code>aov_mod2 &lt;- aov(teg ~ sexo_fct * escolaridade_fct, data = teg)</code></p>
+<p>Em seguida, os resultados do modelo foram examinados por meio da função <code>summary()</code>, que produz a tabela de ANOVA contendo os graus de liberdade, somas de quadrados, quadrados médios, estatísticas F e respectivos valores de significância.</p>
+<p><code>summary(aov_mod2)</code></p>
+<p>A interpretação da ANOVA fatorial envolve três testes distintos.</p>
+<p>O primeiro avalia o efeito principal do sexo sobre a TEG.</p>
+<p>O segundo verifica o efeito principal da escolaridade.</p>
+<p>O terceiro examina a interação entre sexo e escolaridade, indicando se as diferenças associadas à escolaridade são semelhantes ou diferentes para homens e mulheres.</p>
+<p>Além da significância estatística, foi calculado o tamanho do efeito por meio da função <code>cohens_f()</code> do pacote <strong>effectsize</strong>.</p>
+<p>O coeficiente de Cohen (<em>f</em>) fornece uma estimativa da magnitude prática dos efeitos observados.</p>
+<p>Valores próximos de 0,10 são considerados pequenos, 0,25 médios e 0,40 grandes.</p>
+<p><code>cohens_f(aov_mod2, partial = TRUE, squared = FALSE, ci = 0.95 )</code></p>
+<p><em>Os resultados revelaram ausência de efeito principal do sexo sobre a Tendência Empreendedora Geral, F(1, 140) = 0,77, p = 0,383, indicando que homens e mulheres não diferem significativamente em seus níveis médios de empreendedorismo. O tamanho do efeito foi pequeno (f = 0,07), sugerindo relevância prática mínima dessa variável. Em contrapartida, observou-se efeito principal significativo da escolaridade, F(3, 140) = 8,35, p &lt; 0,001, com tamanho de efeito grande (f = 0,42), indicando que os níveis de empreendedorismo variam substancialmente em função da escolaridade dos participantes. Por fim, a interação entre sexo e escolaridade não foi significativa, F(2, 140) = 1,89, p = 0,155, apresentando tamanho de efeito pequeno (f = 0,16). Esse resultado sugere que a relação entre escolaridade e Tendência Empreendedora Geral é semelhante para homens e mulheres. Em conjunto, os resultados indicam que a escolaridade constitui um importante preditor do empreendedorismo, enquanto o sexo não apresenta influência significativa, nem modifica os efeitos da escolaridade sobre os escores da TEG.</em></p>
 </section>
 <section id="novo-banco-de-dados" class="level1">
 <h1>Novo banco de dados</h1>
 <p>Copie, cole e execute os comandos a seguir para baixar um novo banco de dados e alterar a formatação de algumas de suas variáveis.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>link_viqt <span class="ot">&lt;-</span> <span class="st">&quot;https://github.com/jmhbueno/Arquivos_aulas/raw/main/VIQT_data_corrigido_500s.xlsx&quot;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Importa o arquivo do github para o computador (fora do R)</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">url =</span> link_viqt,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">destfile =</span> <span class="st">&quot;viqt.xlsx&quot;</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;wb&quot;</span>)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># importar a planilha para dentro do R </span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>viqt <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">&quot;viqt.xlsx&quot;</span>)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># transformação de variáveis</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>viqt <span class="ot">&lt;-</span> viqt <span class="sc">%&gt;%</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Escolaridade</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">education =</span> <span class="fu">na_if</span>(education, <span class="dv">0</span>),</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">education =</span> <span class="fu">factor</span>(</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>      education,</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>),</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Fundamental&quot;</span>,</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Médio&quot;</span>,</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Graduação&quot;</span>,</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Pós-Graduação&quot;</span>)</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Local onde viveu na infância</span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">urban =</span> <span class="fu">na_if</span>(urban, <span class="dv">0</span>),</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">urban =</span> <span class="fu">factor</span>(</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>      urban,</span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>),</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Rural&quot;</span>,</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Suburbano&quot;</span>,</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Urbano&quot;</span>)</span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Nova variável sexo (apenas masculino e feminino)</span></span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">sex =</span> <span class="fu">ifelse</span>(gender <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">3</span>), <span class="cn">NA</span>, gender),</span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">sex =</span> <span class="fu">factor</span>(</span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>      sex,</span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Masculino&quot;</span>,</span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Feminino&quot;</span>)</span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Variável gender original</span></span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">gender =</span> <span class="fu">na_if</span>(gender, <span class="dv">0</span>),</span>
-<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">gender =</span> <span class="fu">factor</span>(</span>
-<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>      gender,</span>
-<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>),</span>
-<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Masculino&quot;</span>,</span>
-<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Feminino&quot;</span>,</span>
-<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Outro&quot;</span>)</span>
-<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a><span class="co"># corrigir score_full</span></span>
-<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>viqt<span class="sc">$</span>score_full <span class="ot">&lt;-</span> viqt<span class="sc">$</span>score_right <span class="sc">-</span> viqt<span class="sc">$</span>score_wrong</span>
-<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a><span class="co"># inspeção do dataframe</span></span>
-<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(viqt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>link_viqt <span class="ot">&lt;-</span> <span class="st">&quot;https://github.com/jmhbueno/Arquivos_aulas/raw/main/VIQT_data_corrigido_500s.xlsx&quot;</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Importa o arquivo do github para o computador (fora do R)</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">url =</span> link_viqt,</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">destfile =</span> <span class="st">&quot;viqt.xlsx&quot;</span>,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;wb&quot;</span>)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co"># importar a planilha para dentro do R </span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>viqt <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">&quot;viqt.xlsx&quot;</span>)</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="co"># transformação de variáveis</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>viqt <span class="ot">&lt;-</span> viqt <span class="sc">%&gt;%</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Escolaridade</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">education =</span> <span class="fu">na_if</span>(education, <span class="dv">0</span>),</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">education =</span> <span class="fu">factor</span>(</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>      education,</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>),</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Fundamental&quot;</span>,</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Médio&quot;</span>,</span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Graduação&quot;</span>,</span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Pós-Graduação&quot;</span>)</span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Local onde viveu na infância</span></span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">urban =</span> <span class="fu">na_if</span>(urban, <span class="dv">0</span>),</span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">urban =</span> <span class="fu">factor</span>(</span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>      urban,</span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>),</span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Rural&quot;</span>,</span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Suburbano&quot;</span>,</span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Urbano&quot;</span>)</span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Nova variável sexo (apenas masculino e feminino)</span></span>
+<span id="cb26-39"><a href="#cb26-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">sex =</span> <span class="fu">ifelse</span>(gender <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">3</span>), <span class="cn">NA</span>, gender),</span>
+<span id="cb26-40"><a href="#cb26-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">sex =</span> <span class="fu">factor</span>(</span>
+<span id="cb26-41"><a href="#cb26-41" aria-hidden="true" tabindex="-1"></a>      sex,</span>
+<span id="cb26-42"><a href="#cb26-42" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb26-43"><a href="#cb26-43" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Masculino&quot;</span>,</span>
+<span id="cb26-44"><a href="#cb26-44" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Feminino&quot;</span>)</span>
+<span id="cb26-45"><a href="#cb26-45" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb26-46"><a href="#cb26-46" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-47"><a href="#cb26-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Variável gender original</span></span>
+<span id="cb26-48"><a href="#cb26-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">gender =</span> <span class="fu">na_if</span>(gender, <span class="dv">0</span>),</span>
+<span id="cb26-49"><a href="#cb26-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">gender =</span> <span class="fu">factor</span>(</span>
+<span id="cb26-50"><a href="#cb26-50" aria-hidden="true" tabindex="-1"></a>      gender,</span>
+<span id="cb26-51"><a href="#cb26-51" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>),</span>
+<span id="cb26-52"><a href="#cb26-52" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Masculino&quot;</span>,</span>
+<span id="cb26-53"><a href="#cb26-53" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Feminino&quot;</span>,</span>
+<span id="cb26-54"><a href="#cb26-54" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Outro&quot;</span>)</span>
+<span id="cb26-55"><a href="#cb26-55" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-56"><a href="#cb26-56" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-57"><a href="#cb26-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-58"><a href="#cb26-58" aria-hidden="true" tabindex="-1"></a><span class="co"># corrigir score_full</span></span>
+<span id="cb26-59"><a href="#cb26-59" aria-hidden="true" tabindex="-1"></a>viqt<span class="sc">$</span>score_full <span class="ot">&lt;-</span> viqt<span class="sc">$</span>score_right <span class="sc">-</span> viqt<span class="sc">$</span>score_wrong</span>
+<span id="cb26-60"><a href="#cb26-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-61"><a href="#cb26-61" aria-hidden="true" tabindex="-1"></a><span class="co"># inspeção do dataframe</span></span>
+<span id="cb26-62"><a href="#cb26-62" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(viqt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 500
 Columns: 132
@@ -2668,8 +3093,8 @@ $ sex         &lt;fct&gt; Feminino, Feminino, Feminino, Masculino, Masculino, Ma
 <p>Os 30 comportamentos avaliados foram os seguintes:</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 23%">
-<col style="width: 76%">
+<col style="width: 20%">
+<col style="width: 79%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -2804,21 +3229,77 @@ $ sex         &lt;fct&gt; Feminino, Feminino, Feminino, Masculino, Masculino, Ma
 </section>
 <section id="quais-desses-comportamentos-são-preditores-de-inteligência-score_full" class="level1">
 <h1>5. Quais desses comportamentos são preditores de inteligência (score_full)?</h1>
-<!-- O objetivo da análise foi identificar quais dos 30 comportamentos avaliados pelo questionário predizem o desempenho no teste de vocabulário. -->
-<!-- Em outras palavras, buscou-se verificar quais características comportamentais estão associadas a níveis mais elevados ou mais baixos de habilidade verbal. -->
-<!-- Para responder à questão foi estimado um modelo de regressão linear múltipla por meio da função `lm()`. -->
-<!-- A variável dependente foi `score_full`, enquanto os 30 itens comportamentais foram inseridos simultaneamente como variáveis preditoras. -->
-<!-- `mod1 <- lm(score_full ~ S1+S2+S3+S4+S5+S6+S7+S8+S9+S10+` -->
-<!--                         `S11+S12+S13+S14+S15+S16+S17+S18+` -->
-<!--                         `S19+S20+S21+S22+S23+S24+S25+S26+` -->
-<!--                         `S27+S28+S29+S30,` -->
-<!--             `data = viqt,` -->
-<!--             `na.action = na.omit)` -->
-<!-- A função `lm()` ajusta um modelo linear em que cada coeficiente representa o efeito único de um comportamento sobre o desempenho cognitivo, controlando estatisticamente todos os demais comportamentos incluídos na equação. -->
-<!-- Posteriormente, utilizou-se a função `summary()` para examinar os coeficientes estimados, seus erros-padrão, estatísticas *t*, níveis de significância e índices globais de ajuste do modelo. -->
-<!-- summary(mod1) -->
-<!-- O coeficiente de determinação (*R²*) foi utilizado para avaliar a proporção da variância do desempenho cognitivo explicada pelo conjunto de comportamentos investigados. -->
-<!-- *O modelo de regressão foi estatisticamente significativo, F(30, 469) = 6,96, p \< 0,001, explicando aproximadamente 30,8% da variância do desempenho no teste de vocabulário (R² = 0,308; R² ajustado = 0,264). Foram identificados sete preditores significativos do escore de inteligência verbal. Escores mais elevados estiveram associados a maior concordância com os itens “Evito contato com outras pessoas” (S2; β = 1,18, p = 0,010), “Não levo muita bagagem quando viajo” (S7; β = 1,47, p \< 0,001), “Já mantive um diário pessoal” (S15; β = 0,79, p = 0,017) e “Gosto de defender posições contrárias para estimular debates” (S27; β = 1,87, p \< 0,001). Por outro lado, escores mais baixos estiveram associados a maior concordância com os itens “Eu teria interesse em consultar um vidente” (S5; β = -0,86, p = 0,006), “Às vezes sinto vontade de chorar quando fico com raiva” (S11; β = -1,56, p \< 0,001), “Seria capaz de fazer uma quantidade impressionante de flexões” (S17; β = -1,64, p \< 0,001) e “Faço apenas o mínimo necessário para cumprir minhas obrigações” (S26; β = -2,68, p \< 0,001). Em conjunto, os resultados sugerem que comportamentos relacionados à curiosidade intelectual, reflexão pessoal e disposição para questionar ideias estabelecidas tendem a estar associados a melhor desempenho cognitivo, enquanto crenças esotéricas, reatividade emocional e baixa dedicação às tarefas tendem a estar associadas a desempenho inferior no teste de vocabulário.* -->
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(score_full <span class="sc">~</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>             S1<span class="sc">+</span>S2<span class="sc">+</span>S3<span class="sc">+</span>S4<span class="sc">+</span>S5<span class="sc">+</span>S6<span class="sc">+</span>S7<span class="sc">+</span>S8<span class="sc">+</span>S9<span class="sc">+</span>S10<span class="sc">+</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>             S11<span class="sc">+</span>S12<span class="sc">+</span>S13<span class="sc">+</span>S14<span class="sc">+</span>S15<span class="sc">+</span>S16<span class="sc">+</span>S17<span class="sc">+</span>S18<span class="sc">+</span>S19<span class="sc">+</span>S20<span class="sc">+</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>             S21<span class="sc">+</span>S22<span class="sc">+</span>S23<span class="sc">+</span>S24<span class="sc">+</span>S25<span class="sc">+</span>S26<span class="sc">+</span>S27<span class="sc">+</span>S28<span class="sc">+</span>S29<span class="sc">+</span>S30,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> viqt,<span class="at">na.action =</span> na.omit)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = score_full ~ S1 + S2 + S3 + S4 + S5 + S6 + S7 + 
+    S8 + S9 + S10 + S11 + S12 + S13 + S14 + S15 + S16 + S17 + 
+    S18 + S19 + S20 + S21 + S22 + S23 + S24 + S25 + S26 + S27 + 
+    S28 + S29 + S30, data = viqt, na.action = na.omit)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-32.668  -6.990   0.196   7.289  22.535 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 29.318530   3.828479   7.658 1.09e-13 ***
+S1          -0.098393   0.310295  -0.317 0.751311    
+S2           1.176982   0.457799   2.571 0.010449 *  
+S3          -0.083385   0.331848  -0.251 0.801712    
+S4           0.127676   0.448386   0.285 0.775966    
+S5          -0.863126   0.313082  -2.757 0.006063 ** 
+S6          -0.455907   0.418787  -1.089 0.276873    
+S7           1.474840   0.365042   4.040 6.24e-05 ***
+S8           0.260994   0.426563   0.612 0.540931    
+S9           0.683806   0.357403   1.913 0.056323 .  
+S10         -0.323694   0.381639  -0.848 0.396778    
+S11         -1.558604   0.361961  -4.306 2.03e-05 ***
+S12         -0.105134   0.469316  -0.224 0.822843    
+S13          0.318272   0.334190   0.952 0.341400    
+S14          0.355582   0.520739   0.683 0.495044    
+S15          0.786546   0.329818   2.385 0.017485 *  
+S16         -0.116640   0.465395  -0.251 0.802214    
+S17         -1.644421   0.425971  -3.860 0.000129 ***
+S18         -0.799281   0.428569  -1.865 0.062806 .  
+S19         -0.710051   0.378709  -1.875 0.061424 .  
+S20          0.128460   0.515450   0.249 0.803301    
+S21         -0.683876   0.357941  -1.911 0.056667 .  
+S22         -0.066239   0.410676  -0.161 0.871932    
+S23          0.116034   0.404259   0.287 0.774217    
+S24         -0.080784   0.417187  -0.194 0.846541    
+S25          0.007787   0.364031   0.021 0.982942    
+S26         -2.683790   0.465847  -5.761 1.51e-08 ***
+S27          1.873342   0.385751   4.856 1.63e-06 ***
+S28          0.312950   0.363931   0.860 0.390275    
+S29         -0.136188   0.403217  -0.338 0.735700    
+S30          0.316652   0.351268   0.901 0.367809    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 9.992 on 469 degrees of freedom
+Multiple R-squared:  0.3079,    Adjusted R-squared:  0.2637 
+F-statistic: 6.956 on 30 and 469 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>O objetivo da análise foi identificar quais dos 30 comportamentos avaliados pelo questionário predizem o desempenho no teste de vocabulário.</p>
+<p>Em outras palavras, buscou-se verificar quais características comportamentais estão associadas a níveis mais elevados ou mais baixos de habilidade verbal.</p>
+<p>Para responder à questão foi estimado um modelo de regressão linear múltipla por meio da função <code>lm()</code>.</p>
+<p>A variável dependente foi <code>score_full</code>, enquanto os 30 itens comportamentais foram inseridos simultaneamente como variáveis preditoras.</p>
+<p><code>mod1 &lt;- lm(score_full ~ S1+S2+S3+S4+S5+S6+S7+S8+S9+S10+S11+S12+S13+S14+S15+S16+S17+S18+S19+S20+S21+S22+S23+S24+S25+S26+S27+S28+S29+S30,data = viqt,na.action = na.omit)</code></p>
+<p>A função <code>lm()</code> ajusta um modelo linear em que cada coeficiente representa o efeito único de um comportamento sobre o desempenho cognitivo, controlando estatisticamente todos os demais comportamentos incluídos na equação.</p>
+<p>Posteriormente, utilizou-se a função <code>summary()</code> para examinar os coeficientes estimados, seus erros-padrão, estatísticas <em>t</em>, níveis de significância e índices globais de ajuste do modelo.</p>
+<p>summary(mod1)</p>
+<p>O coeficiente de determinação (<em>R²</em>) foi utilizado para avaliar a proporção da variância do desempenho cognitivo explicada pelo conjunto de comportamentos investigados.</p>
+<p><em>O modelo de regressão foi estatisticamente significativo, F(30, 469) = 6,96, p &lt; 0,001, explicando aproximadamente 30,8% da variância do desempenho no teste de vocabulário (R² = 0,308; R² ajustado = 0,264). Foram identificados sete preditores significativos do escore de inteligência verbal. Escores mais elevados estiveram associados a maior concordância com os itens “Evito contato com outras pessoas” (S2; β = 1,18, p = 0,010), “Não levo muita bagagem quando viajo” (S7; β = 1,47, p &lt; 0,001), “Já mantive um diário pessoal” (S15; β = 0,79, p = 0,017) e “Gosto de defender posições contrárias para estimular debates” (S27; β = 1,87, p &lt; 0,001). Por outro lado, escores mais baixos estiveram associados a maior concordância com os itens “Eu teria interesse em consultar um vidente” (S5; β = -0,86, p = 0,006), “Às vezes sinto vontade de chorar quando fico com raiva” (S11; β = -1,56, p &lt; 0,001), “Seria capaz de fazer uma quantidade impressionante de flexões” (S17; β = -1,64, p &lt; 0,001) e “Faço apenas o mínimo necessário para cumprir minhas obrigações” (S26; β = -2,68, p &lt; 0,001). Em conjunto, os resultados sugerem que comportamentos relacionados à curiosidade intelectual, reflexão pessoal e disposição para questionar ideias estabelecidas tendem a estar associados a melhor desempenho cognitivo, enquanto crenças esotéricas, reatividade emocional e baixa dedicação às tarefas tendem a estar associadas a desempenho inferior no teste de vocabulário.</em></p>
 </section>
 
 </main>
